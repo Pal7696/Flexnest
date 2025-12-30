@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" href="./screenshots/favicon.png" type="image/x-icon" />
-    <title>Movies&Webseries Site</title>
-     <!-- Optional: Add a favicon for better branding -->
-    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
-    
+    <title>FLEXNEST - Movies & Webseries</title>
+    <script src="https://www.youtube.com/iframe_api"></script>
+
     <!-- Optional: Include meta description for SEO -->
     <meta name="description" content="Explore a vast collection of movies and TV shows with FLEXNEST. Search, filter by genres, and discover your next favorite entertainment!">
   </head>
@@ -21,16 +20,14 @@
           <div class="flex-container">
             <a href="index.html" aria-label="FLEXNEST Home">
               <h1 class="animate-charcter larger-text text-effect">FLEXNEST</h1>
-               <h3 class="animate-charcter larger-text text-effect">Designed  By Piyush Pal</h3>
             </a>
+            <!-- Search Form -->
+            <form id="form" role="search" aria-label="Movie and TV Show Search">
+              <input type="text" id="search" class="search" placeholder="Your cozy corner for movies and series" aria-label="Search" />
+            </form>
           </div>
         </div>
       </div>
-
-      <!-- Search Form -->
-      <form id="form" role="search" aria-label="Movie and TV Show Search">
-        <input type="text" id="search" class="search" placeholder="Your cozy corner for movies and series" aria-label="Search" />
-      </form>
 
       <!-- Switch Icon -->
       <div class="pageChange">
@@ -194,13 +191,9 @@
         </div>
 
         <hr />
-        <div class="footer">
-          <div class="footer-content">
-            <div class="copyright">
-              <p class="copy">&copy; <span id="copyright-year"></span> FLEXNEST. All rights reserved.</p>
-              <p class="created-by">Created by Piyush Pal</p>
-            </div>
-          </div>
+        <div class="copyright">
+          <p class="copy">&copy; <span id="copyright-year">2025</span> FLEXNEST. All rights reserved.</p>
+          <p class="created-by">Created by Piyush Pal</p>
         </div>
 
     <!-- Scripts -->

@@ -7,6 +7,20 @@ const SEARCH_url = 'https://api.themoviedb.org/3/search/movie?api_key=4b153b1233
 const TV_url = BASE_url + '/tv/popular?' + API_key + '&vote_count.gte=100';
 const TV_Search_url = 'https://api.themoviedb.org/3/search/tv?' + API_key + '&query='
 
+let players = [];
+let activeSlide = 0;
+
+function onPlayerError(event) {
+    console.log('YouTube player error:', event.data);
+    let playerDiv = event.target.getIframe().parentNode;
+    playerDiv.style.display = 'none';
+    playerDiv.innerHTML = '<p style="color: white; text-align: center;">Video not available or embeddable.</p>';
+}
+
+function onYouTubeIframeAPIReady() {
+    // API ready, players will be created in getVideo
+}
+
 
 //Array of all the genres of movies.
 const genres = [
@@ -527,26 +541,38 @@ async function getVideo(url){
 
     let res = await fetch(url);
     let videoData = await res.json();
-    
+
     if(videoData){
         console.log(videoData);
         document.getElementById("myNav").style.width = "100%";
         if(videoData.results.length > 0){
-            var embed = [];
-            videoData.results.forEach(video => {
-            let{name,key,site,type} = video;
+            players = []; // Reset players array
+            overlayContent.innerHTML = '';
+            videoData.results.forEach((video, index) => {
+                let{name,key,site,type} = video;
 
-            if(site == 'YouTube' && type == 'Trailer'){
-            embed.push(`
-            <div class="video-container">
-            <iframe  width="560" height="315" class="embed hide" frameborder="0" src="https://www.youtube.com/embed/${key}" title="${name}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
-            `)
+                if(site == 'YouTube' && type == 'Trailer'){
+                    let container = document.createElement('div');
+                    container.classList.add('video-container');
+                    if(index !== 0) container.classList.add('hide');
+                    container.id = `player-${index}`;
+                    overlayContent.appendChild(container);
+
+                    players.push(new YT.Player(`player-${index}`, {
+                        height: '315',
+                        width: '560',
+                        videoId: key,
+                        events: {
+                            'onError': onPlayerError
+                        }
+                    }));
+                }
+            });
+
+            if(players.length === 0){
+                overlayContent.innerHTML = `<h1 style="color: white;"> WOW! SUCH EMPTY 🙂 </h1>`;
             }
-            })
-
-            overlayContent.innerHTML = embed.join('');
-            activeSlide=0;
-            showVideos();
+            activeSlide = 0;
         }
         else{
             overlayContent.innerHTML = `
@@ -558,11 +584,13 @@ async function getVideo(url){
 function closeNav() {
     const overlay = document.getElementById("myNav");
     overlay.style.width = "0%";
-    const embedClass = document.querySelectorAll('.embed');
-    embedClass.forEach(embedTag => {
-      embedTag.src = '';
-      embedTag.parentNode.removeChild(embedTag);
+    // Stop and destroy all YouTube players
+    players.forEach(player => {
+        if (player && player.destroy) {
+            player.destroy();
+        }
     });
+    players = [];
     activeSlide = 0;
 }
 
